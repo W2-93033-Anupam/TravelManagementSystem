@@ -1,0 +1,10 @@
+{
+  "name": "travel-management-backend",
+  "build": {
+    "builder": "NIXPACKS"
+  },
+  "deploy": {
+    "startCommand": "npm start",
+    "healthcheckPath": "/health"
+  }
+}

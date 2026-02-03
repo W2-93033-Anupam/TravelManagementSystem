@@ -1,0 +1,351 @@
+# TRAVEL MANAGEMENT SYSTEM - API ENDPOINTS
+Base URL: http://localhost:5000
+
+===============================================
+🔍 HEALTH CHECK
+===============================================
+GET /health
+- Description: Check if API is running
+- Auth: None
+- Response: {"success": true, "message": "Travel Management System API is running"}
+
+===============================================
+👤 CUSTOMER ENDPOINTS
+===============================================
+
+1. POST /api/customer/register
+- Description: Register new customer
+- Auth: None
+- Body: {
+    "full_name": "John Doe",
+    "email": "john@email.com",
+    "phone": "+91-9876543210",
+    "password": "password123",
+    "address": "123 Main Street, City"
+  }
+
+2. POST /api/customer/login
+- Description: Customer login
+- Auth: None
+- Body: {
+    "email": "john@email.com",
+    "password": "password123"
+  }
+
+3. GET /api/customer/profile
+- Description: Get customer profile
+- Auth: Bearer Token (Customer)
+- Headers: Authorization: Bearer <token>
+
+4. PUT /api/customer/profile
+- Description: Update customer profile
+- Auth: Bearer Token (Customer)
+- Body: {
+    "full_name": "John Updated",
+    "phone": "+91-9876543211",
+    "address": "456 New Street, City"
+  }
+
+5. PUT /api/customer/change-password
+- Description: Change customer password
+- Auth: Bearer Token (Customer)
+- Body: {
+    "current_password": "oldpassword",
+    "new_password": "newpassword123"
+  }
+
+6. GET /api/customer/bookings
+- Description: Get customer bookings
+- Auth: Bearer Token (Customer)
+
+===============================================
+🏢 ADMIN ENDPOINTS
+===============================================
+
+1. POST /api/admin/login
+- Description: Admin login
+- Auth: None
+- Body: {
+    "email": "admin@travel.com",
+    "password": "admin123"
+  }
+
+2. GET /api/admin/dashboard
+- Description: Get dashboard statistics
+- Auth: Bearer Token (Admin)
+
+3. POST /api/admin/agents
+- Description: Create new agent
+- Auth: Bearer Token (Admin)
+- Body: {
+    "name": "Agent Name",
+    "email": "agent@travel.com",
+    "phone": "+91-9876543212",
+    "password": "agent123",
+    "commission_rate": 5.00
+  }
+
+4. GET /api/admin/agents
+- Description: Get all agents
+- Auth: Bearer Token (Admin)
+
+5. PUT /api/admin/agents/:id
+- Description: Update agent
+- Auth: Bearer Token (Admin)
+- URL: /api/admin/agents/1
+- Body: {
+    "name": "Updated Agent Name",
+    "phone": "+91-9876543213",
+    "commission_rate": 6.00,
+    "status": "active"
+  }
+
+6. DELETE /api/admin/agents/:id
+- Description: Delete agent
+- Auth: Bearer Token (Admin)
+- URL: /api/admin/agents/1
+
+===============================================
+🎯 AGENT ENDPOINTS
+===============================================
+
+1. POST /api/agent/login
+- Description: Agent login
+- Auth: None
+- Body: {
+    "email": "agent@travel.com",
+    "password": "agent123"
+  }
+
+2. GET /api/agent/profile
+- Description: Get agent profile
+- Auth: Bearer Token (Agent)
+
+3. PUT /api/agent/profile
+- Description: Update agent profile
+- Auth: Bearer Token (Agent)
+- Body: {
+    "name": "Updated Agent Name",
+    "phone": "+91-9876543214"
+  }
+
+4. PUT /api/agent/change-password
+- Description: Change agent password
+- Auth: Bearer Token (Agent)
+- Body: {
+    "current_password": "oldpassword",
+    "new_password": "newpassword123"
+  }
+
+5. GET /api/agent/dashboard
+- Description: Get agent dashboard
+- Auth: Bearer Token (Agent)
+
+===============================================
+📦 PACKAGE ENDPOINTS
+===============================================
+
+1. GET /api/packages
+- Description: Get all packages
+- Auth: None
+- Query Params: ?destination=Goa&min_price=10000&max_price=30000
+
+2. GET /api/packages/:id
+- Description: Get package by ID
+- Auth: None
+- URL: /api/packages/1
+
+3. POST /api/packages/book
+- Description: Book a package
+- Auth: Bearer Token (Customer)
+- Body: {
+    "package_id": 1,
+    "travel_date": "2024-12-25",
+    "number_of_persons": 2,
+    "special_requests": "Vegetarian meals"
+  }
+
+===============================================
+🚌 VEHICLE ENDPOINTS
+===============================================
+
+1. GET /api/vehicles
+- Description: Get all vehicles
+- Auth: None
+- Query Params: ?source=Delhi&destination=Agra&date=2024-12-15
+
+2. GET /api/vehicles/:id
+- Description: Get vehicle by ID
+- Auth: None
+- URL: /api/vehicles/1
+
+3. POST /api/vehicles/book
+- Description: Book vehicle seats
+- Auth: Bearer Token (Customer)
+- Body: {
+    "bus_id": 1,
+    "travel_date": "2024-12-15",
+    "seats_booked": 2,
+    "passenger_details": [
+      {"name": "John Doe", "age": 30, "gender": "Male"},
+      {"name": "Jane Doe", "age": 28, "gender": "Female"}
+    ]
+  }
+
+4. GET /api/vehicles/agent/my
+- Description: Get agent's vehicles
+- Auth: Bearer Token (Agent)
+
+5. POST /api/vehicles/agent
+- Description: Create new vehicle
+- Auth: Bearer Token (Agent)
+- Body: {
+    "bus_number": "DL01XY1234",
+    "bus_type": "AC",
+    "total_seats": 40,
+    "source": "Delhi",
+    "destination": "Agra",
+    "departure_time": "2024-12-15 06:00:00",
+    "arrival_time": "2024-12-15 09:30:00",
+    "fare_per_seat": 500.00
+  }
+
+6. PUT /api/vehicles/agent/:id
+- Description: Update vehicle
+- Auth: Bearer Token (Agent)
+- URL: /api/vehicles/agent/1
+- Body: {
+    "fare_per_seat": 550.00,
+    "status": "active"
+  }
+
+7. DELETE /api/vehicles/agent/:id
+- Description: Delete vehicle
+- Auth: Bearer Token (Agent)
+- URL: /api/vehicles/agent/1
+
+===============================================
+🏨 HOTEL ENDPOINTS
+===============================================
+
+1. GET /api/hotels
+- Description: Get all hotels
+- Auth: None
+- Query Params: ?location=Goa&min_price=2000&max_price=8000&rating=4
+
+2. GET /api/hotels/:id
+- Description: Get hotel by ID
+- Auth: None
+- URL: /api/hotels/1
+
+3. POST /api/hotels/book
+- Description: Book hotel
+- Auth: Bearer Token
+- Body: {
+    "hotel_id": 1,
+    "customer_name": "John Doe",
+    "customer_email": "john@email.com",
+    "customer_phone": "+91-9876543210",
+    "check_in_date": "2024-12-20",
+    "check_out_date": "2024-12-23",
+    "number_of_rooms": 1,
+    "number_of_guests": 2
+  }
+
+4. GET /api/hotels/bookings/my
+- Description: Get user hotel bookings
+- Auth: Bearer Token
+
+5. GET /api/hotels/bookings/:id
+- Description: Get hotel booking by ID
+- Auth: Bearer Token
+- URL: /api/hotels/bookings/1
+
+6. PUT /api/hotels/bookings/:id/cancel
+- Description: Cancel hotel booking
+- Auth: Bearer Token
+- URL: /api/hotels/bookings/1/cancel
+
+===============================================
+🌍 DESTINATION ENDPOINTS
+===============================================
+
+1. GET /api/destinations
+- Description: Get all destinations
+- Auth: None
+
+2. GET /api/destinations/popular
+- Description: Get popular destinations
+- Auth: None
+
+3. GET /api/destinations/:id
+- Description: Get destination by ID
+- Auth: None
+- URL: /api/destinations/1
+
+===============================================
+🔐 AUTHENTICATION HEADERS
+===============================================
+For protected routes, include:
+Headers: {
+  "Authorization": "Bearer <your_jwt_token>",
+  "Content-Type": "application/json"
+}
+
+===============================================
+📝 SAMPLE RESPONSES
+===============================================
+
+Success Response:
+{
+  "success": true,
+  "message": "Operation successful",
+  "data": { ... }
+}
+
+Error Response:
+{
+  "success": false,
+  "message": "Error description"
+}
+
+Login Response:
+{
+  "success": true,
+  "message": "Login successful",
+  "data": {
+    "user": { ... },
+    "token": "jwt_token_here"
+  }
+}
+
+===============================================
+🧪 TESTING SEQUENCE
+===============================================
+1. Start with: GET /health
+2. Register customer: POST /api/customer/register
+3. Login customer: POST /api/customer/login
+4. Get packages: GET /api/packages
+5. Book package: POST /api/packages/book (with token)
+6. Check bookings: GET /api/customer/bookings (with token)
+
+===============================================
+📊 HTTP STATUS CODES
+===============================================
+200 - OK (Success)
+201 - Created (Resource created)
+400 - Bad Request (Invalid data)
+401 - Unauthorized (No/Invalid token)
+403 - Forbidden (Access denied)
+404 - Not Found (Resource not found)
+500 - Internal Server Error
+
+===============================================
+💡 NOTES
+===============================================
+- All POST/PUT requests require Content-Type: application/json
+- Dates should be in YYYY-MM-DD format
+- DateTime should be in YYYY-MM-DD HH:MM:SS format
+- Phone numbers should include country code
+- Passwords should be at least 6 characters
+- JWT tokens expire in 7 days (configurable)

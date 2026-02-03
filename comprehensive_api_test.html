@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Management API Test Suite</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        .header {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+            margin-right: 20px;
+        }
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-left: auto;
+        }
+        .nav-tab {
+            padding: 8px 16px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .nav-tab:hover, .nav-tab.active {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 20px;
+        }
+        .section { 
+            background: rgba(255,255,255,0.95); 
+            margin: 20px 0; 
+            padding: 30px; 
+            border-radius: 15px; 
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .endpoint { 
+            margin: 20px 0; 
+            padding: 20px; 
+            border: 1px solid #e0e0e0; 
+            border-radius: 10px;
+            background: #fafafa;
+            transition: all 0.3s;
+        }
+        .endpoint:hover {
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .method { 
+            display: inline-block; 
+            padding: 6px 12px; 
+            border-radius: 20px; 
+            color: white; 
+            font-weight: bold; 
+            font-size: 12px;
+            margin-right: 10px;
+        }
+        .get { background: linear-gradient(45deg, #28a745, #20c997); }
+        .post { background: linear-gradient(45deg, #007bff, #6610f2); }
+        .put { background: linear-gradient(45deg, #ffc107, #fd7e14); color: black; }
+        .delete { background: linear-gradient(45deg, #dc3545, #e83e8c); }
+        .form-group {
+            margin: 15px 0;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #555;
+        }
+        input, textarea, select { 
+            width: 100%; 
+            padding: 12px 16px; 
+            border: 2px solid #e0e0e0; 
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .btn { 
+            background: linear-gradient(45deg, #667eea, #764ba2); 
+            color: white; 
+            padding: 12px 24px; 
+            border: none; 
+            border-radius: 25px; 
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+        .btn:active {
+            transform: translateY(0);
+        }
+        .response { 
+            background: #f8f9fa; 
+            padding: 20px; 
+            border-radius: 8px; 
+            margin-top: 15px; 
+            white-space: pre-wrap;
+            border-left: 4px solid #6c757d;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success { border-left-color: #28a745; background: #d4edda; }
+        .error { border-left-color: #dc3545; background: #f8d7da; }
+        .token-display { 
+            background: linear-gradient(45deg, #e9ecef, #f8f9fa); 
+            padding: 15px 20px; 
+            border-radius: 10px; 
+            margin: 15px 0; 
+            word-break: break-all;
+            border: 2px dashed #6c757d;
+            font-family: 'Courier New', monospace;
+        }
+        .token-active {
+            background: linear-gradient(45deg, #d4edda, #c3e6cb);
+            border-color: #28a745;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        .status-online { background: #28a745; }
+        .status-offline { background: #dc3545; }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-plane"></i> Travel API Test Suite
+            </div>
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="showSection('auth')">
+                    <i class="fas fa-key"></i> Auth
+                </button>
+                <button class="nav-tab" onclick="showSection('packages')">
+                    <i class="fas fa-box"></i> Packages
+                </button>
+                <button class="nav-tab" onclick="showSection('hotels')">
+                    <i class="fas fa-hotel"></i> Hotels
+                </button>
+                <button class="nav-tab" onclick="showSection('admin')">
+                    <i class="fas fa-user-shield"></i> Admin
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Token Management -->
+        <div class="section">
+            <h2><i class="fas fa-key"></i> Authentication Token</h2>
+            <div class="token-display" id="tokenDisplay">
+                <i class="fas fa-info-circle"></i> No token set - Please login first
+            </div>
+            <button class="btn" onclick="clearToken()">
+                <i class="fas fa-trash"></i> Clear Token
+            </button>
+        </div>
+
+        <!-- Authentication Section -->
+        <div class="section" id="auth-section">
+            <h2><i class="fas fa-user-lock"></i> Authentication</h2>
+            
+            <div class="grid">
+                <div class="card">
+                    <h3><span class="method post">POST</span> Customer Login</h3>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="customerEmail" placeholder="Enter email" value="showman@gmail.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="customerPassword" placeholder="Enter password" value="test123">
+                    </div>
+                    <button class="btn" onclick="customerLogin()">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                    <div class="response" id="customerLoginResponse"></div>
+                </div>
+
+                <div class="card">
+                    <h3><span class="method post">POST</span> Customer Register</h3>
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="regName" placeholder="Full Name" value="Test User">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="regEmail" placeholder="Email" value="test@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="tel" id="regPhone" placeholder="Phone" value="1234567890">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="regPassword" placeholder="Password" value="password123">
+                    </div>
+                    <button class="btn" onclick="customerRegister()">
+                        <i class="fas fa-user-plus"></i> Register
+                    </button>
+                    <div class="response" id="customerRegisterResponse"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Packages Section -->
+        <div class="section" id="packages-section" style="display: none;">
+            <h2><i class="fas fa-box-open"></i> Travel Packages</h2>
+            
+            <div class="grid">
+                <div class="card">
+                    <h3><span class="method get">GET</span> All Packages</h3>
+                    <button class="btn" onclick="getPackages()">
+                        <i class="fas fa-list"></i> Get Packages
+                    </button>
+                    <div class="response" id="packagesResponse"></div>
+                </div>
+
+                <div class="card">
+                    <h3><span class="method post">POST</span> Book Package</h3>
+                    <div class="form-group">
+                        <label>Package ID</label>
+                        <input type="number" id="bookPackageId" placeholder="Package ID" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Booking Date</label>
+                        <input type="date" id="bookingDate">
+                    </div>
+                    <div class="form-group">
+                        <label>Number of Persons</label>
+                        <input type="number" id="numPersons" placeholder="Persons" value="2">
+                    </div>
+                    <button class="btn" onclick="bookPackage()">
+                        <i class="fas fa-calendar-check"></i> Book Package
+                    </button>
+                    <div class="response" id="bookPackageResponse"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hotels Section -->
+        <div class="section" id="hotels-section" style="display: none;">
+            <h2><i class="fas fa-building"></i> Hotels</h2>
+            
+            <div class="grid">
+                <div class="card">
+                    <h3><span class="method get">GET</span> All Hotels</h3>
+                    <button class="btn" onclick="getHotels()">
+                        <i class="fas fa-list"></i> Get Hotels
+                    </button>
+                    <div class="response" id="hotelsResponse"></div>
+                </div>
+
+                <div class="card">
+                    <h3><span class="method post">POST</span> Book Hotel</h3>
+                    <div class="form-group">
+                        <label>Hotel ID</label>
+                        <input type="number" id="bookHotelId" placeholder="Hotel ID" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Check-in Date</label>
+                        <input type="date" id="checkinDate">
+                    </div>
+                    <div class="form-group">
+                        <label>Check-out Date</label>
+                        <input type="date" id="checkoutDate">
+                    </div>
+                    <div class="form-group">
+                        <label>Number of Rooms</label>
+                        <input type="number" id="numRooms" placeholder="Rooms" value="1">
+                    </div>
+                    <button class="btn" onclick="bookHotel()">
+                        <i class="fas fa-bed"></i> Book Hotel
+                    </button>
+                    <div class="response" id="bookHotelResponse"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Section -->
+        <div class="section" id="admin-section" style="display: none;">
+            <h2><i class="fas fa-user-shield"></i> Admin Panel</h2>
+            
+            <div class="grid">
+                <div class="card">
+                    <h3><span class="method post">POST</span> Admin Login</h3>
+                    <div class="form-group">
+                        <label>Admin Email</label>
+                        <input type="email" id="adminEmail" placeholder="Admin Email" value="admin@travel.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Admin Password</label>
+                        <input type="password" id="adminPassword" placeholder="Password" value="admin123">
+                    </div>
+                    <button class="btn" onclick="adminLogin()">
+                        <i class="fas fa-shield-alt"></i> Admin Login
+                    </button>
+                    <div class="response" id="adminLoginResponse"></div>
+                </div>
+
+                <div class="card">
+                    <h3><span class="method get">GET</span> Dashboard Stats</h3>
+                    <button class="btn" onclick="getAdminDashboard()">
+                        <i class="fas fa-chart-bar"></i> Get Dashboard
+                    </button>
+                    <div class="response" id="adminDashboardResponse"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5000/api';
+        let authToken = null;
+
+        function showSection(section) {
+            // Hide all sections
+            document.querySelectorAll('[id$="-section"]').forEach(s => s.style.display = 'none');
+            // Show selected section
+            document.getElementById(section + '-section').style.display = 'block';
+            // Update active tab
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function updateTokenDisplay() {
+            const display = document.getElementById('tokenDisplay');
+            if (authToken) {
+                display.innerHTML = `<i class="fas fa-check-circle"></i> Token Active: ${authToken.substring(0, 50)}...`;
+                display.className = 'token-display token-active';
+            } else {
+                display.innerHTML = '<i class="fas fa-info-circle"></i> No token set - Please login first';
+                display.className = 'token-display';
+            }
+        }
+
+        function clearToken() {
+            authToken = null;
+            updateTokenDisplay();
+        }
+
+        async function makeRequest(method, endpoint, data = null) {
+            const options = {
+                method,
+                headers: { 'Content-Type': 'application/json' }
+            };
+
+            if (authToken) {
+                options.headers['Authorization'] = `Bearer ${authToken}`;
+            }
+
+            if (data) {
+                options.body = JSON.stringify(data);
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, options);
+                const result = await response.json();
+                return { success: response.ok, data: result, status: response.status };
+            } catch (error) {
+                return { success: false, error: error.message };
+            }
+        }
+
+        function displayResponse(elementId, response) {
+            const element = document.getElementById(elementId);
+            element.textContent = JSON.stringify(response, null, 2);
+            element.className = `response ${response.success ? 'success' : 'error'} fade-in`;
+        }
+
+        // Authentication functions
+        async function customerLogin() {
+            const email = document.getElementById('customerEmail').value;
+            const password = document.getElementById('customerPassword').value;
+            
+            const response = await makeRequest('POST', '/customer/login', { email, password });
+            
+            if (response.success && response.data.success) {
+                authToken = response.data.data.token;
+                updateTokenDisplay();
+            }
+            
+            displayResponse('customerLoginResponse', response);
+        }
+
+        async function customerRegister() {
+            const data = {
+                full_name: document.getElementById('regName').value,
+                email: document.getElementById('regEmail').value,
+                phone: document.getElementById('regPhone').value,
+                password: document.getElementById('regPassword').value,
+                address: 'Test Address'
+            };
+            
+            const response = await makeRequest('POST', '/customer/register', data);
+            displayResponse('customerRegisterResponse', response);
+        }
+
+        async function adminLogin() {
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+            
+            const response = await makeRequest('POST', '/admin/login', { email, password });
+            
+            if (response.success && response.data.success) {
+                authToken = response.data.data.token;
+                updateTokenDisplay();
+            }
+            
+            displayResponse('adminLoginResponse', response);
+        }
+
+        async function getAdminDashboard() {
+            const response = await makeRequest('GET', '/admin/dashboard');
+            displayResponse('adminDashboardResponse', response);
+        }
+
+        // Package functions
+        async function getPackages() {
+            const response = await makeRequest('GET', '/packages');
+            displayResponse('packagesResponse', response);
+        }
+
+        async function bookPackage() {
+            const data = {
+                package_id: parseInt(document.getElementById('bookPackageId').value),
+                booking_date: document.getElementById('bookingDate').value,
+                num_persons: parseInt(document.getElementById('numPersons').value)
+            };
+            
+            const response = await makeRequest('POST', '/packages/book', data);
+            displayResponse('bookPackageResponse', response);
+        }
+
+        // Hotel functions
+        async function getHotels() {
+            const response = await makeRequest('GET', '/hotels');
+            displayResponse('hotelsResponse', response);
+        }
+
+        async function bookHotel() {
+            const data = {
+                hotel_id: parseInt(document.getElementById('bookHotelId').value),
+                checkin_date: document.getElementById('checkinDate').value,
+                checkout_date: document.getElementById('checkoutDate').value,
+                num_rooms: parseInt(document.getElementById('numRooms').value)
+            };
+            
+            const response = await makeRequest('POST', '/hotels/book', data);
+            displayResponse('bookHotelResponse', response);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+            
+            document.getElementById('bookingDate').value = today;
+            document.getElementById('checkinDate').value = today;
+            document.getElementById('checkoutDate').value = tomorrow;
+            
+            updateTokenDisplay();
+        });
+    </script>
+</body>
+</html>

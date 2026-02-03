@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile App Test Suite - Travel Management</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        .header {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #6c5ce7;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .platform-badges {
+            display: flex;
+            gap: 10px;
+        }
+        .platform-badge {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+        }
+        .android { background: linear-gradient(45deg, #3ddc84, #00c851); }
+        .ios { background: linear-gradient(45deg, #007aff, #5856d6); }
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 20px;
+        }
+        .hero-section {
+            background: rgba(255,255,255,0.95);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+        .hero-title {
+            font-size: 36px;
+            color: #6c5ce7;
+            margin-bottom: 15px;
+        }
+        .hero-subtitle {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .qr-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        .qr-placeholder {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            border: 3px dashed #6c5ce7;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            transition: all 0.3s;
+        }
+        .qr-placeholder:hover {
+            transform: scale(1.05);
+            border-color: #a29bfe;
+        }
+        .qr-icon {
+            font-size: 48px;
+            color: #6c5ce7;
+            margin-bottom: 10px;
+        }
+        .section { 
+            background: rgba(255,255,255,0.95); 
+            margin: 20px 0; 
+            padding: 30px; 
+            border-radius: 15px; 
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .section h2 {
+            color: #6c5ce7;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+        }
+        .steps-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .step-card {
+            background: #fafafa;
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid #6c5ce7;
+            transition: all 0.3s;
+            position: relative;
+        }
+        .step-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(108, 92, 231, 0.2);
+        }
+        .step-number {
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: linear-gradient(45deg, #6c5ce7, #a29bfe);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .step-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            margin-top: 10px;
+        }
+        .command {
+            background: #2d3748;
+            color: #68d391;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+        .checklist {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        .checklist-card {
+            background: #fafafa;
+            padding: 25px;
+            border-radius: 12px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+        .checklist-card:hover {
+            border-color: #a29bfe;
+            transform: translateY(-2px);
+        }
+        .checklist-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: #6c5ce7;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+        .checkbox {
+            width: 18px;
+            height: 18px;
+            border: 2px solid #6c5ce7;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        .checkbox.checked {
+            background: #6c5ce7;
+        }
+        .checkbox.checked::after {
+            content: '✓';
+            position: absolute;
+            color: white;
+            font-size: 12px;
+            top: -2px;
+            left: 2px;
+        }
+        .btn { 
+            background: linear-gradient(45deg, #6c5ce7, #a29bfe); 
+            color: white; 
+            padding: 12px 24px; 
+            border: none; 
+            border-radius: 25px; 
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin: 5px;
+        }
+        .btn:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108, 92, 231, 0.4);
+        }
+        .btn-success {
+            background: linear-gradient(45deg, #00b894, #00cec9);
+        }
+        .btn-warning {
+            background: linear-gradient(45deg, #fdcb6e, #e17055);
+        }
+        .btn-danger {
+            background: linear-gradient(45deg, #e17055, #d63031);
+        }
+        .credentials-card {
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #6c5ce7;
+            margin: 15px 0;
+        }
+        .credential-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 8px 0;
+            padding: 8px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .credential-item:last-child {
+            border-bottom: none;
+        }
+        .credential-label {
+            font-weight: 600;
+            color: #495057;
+        }
+        .credential-value {
+            font-family: 'Courier New', monospace;
+            background: #6c5ce7;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .troubleshooting {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .troubleshooting h4 {
+            color: #856404;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .solution {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .progress-ring {
+            width: 120px;
+            height: 120px;
+            margin: 20px auto;
+        }
+        .progress-ring-circle {
+            stroke: #6c5ce7;
+            stroke-width: 8;
+            fill: transparent;
+            stroke-dasharray: 283;
+            stroke-dashoffset: 283;
+            transition: stroke-dashoffset 0.5s;
+        }
+        .progress-text {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #6c5ce7;
+            margin-top: -80px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-mobile-alt"></i>
+                Mobile Test Suite
+            </div>
+            <div class="platform-badges">
+                <div class="platform-badge android">
+                    <i class="fab fa-android"></i> Android
+                </div>
+                <div class="platform-badge ios">
+                    <i class="fab fa-apple"></i> iOS
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <div class="hero-title">
+                <i class="fas fa-rocket"></i> Mobile App Testing
+            </div>
+            <div class="hero-subtitle">
+                Test your React Native travel management app across platforms
+            </div>
+            <div class="qr-container">
+                <div class="qr-placeholder">
+                    <div class="qr-icon">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <div>Scan QR Code</div>
+                    <div style="font-size: 12px; color: #666;">From Terminal</div>
+                </div>
+                <div style="text-align: center;">
+                    <h3 style="color: #6c5ce7; margin-bottom: 15px;">Alternative Access</h3>
+                    <div class="command">exp://192.168.1.7:8081</div>
+                    <p style="margin-top: 10px; color: #666;">Enter this URL in Expo Go app</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Setup -->
+        <div class="section">
+            <h2><i class="fas fa-play-circle"></i> Quick Setup Guide</h2>
+            
+            <div class="steps-container">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Start Backend Server</div>
+                    <p>Ensure your backend API is running</p>
+                    <div class="command">cd backend && npm run dev</div>
+                    <button class="btn btn-success" onclick="checkBackend()">
+                        <i class="fas fa-check"></i> Check Backend
+                    </button>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Start Mobile Server</div>
+                    <p>Launch the Expo development server</p>
+                    <div class="command">cd mobile && npm start</div>
+                    <button class="btn btn-success" onclick="checkMobile()">
+                        <i class="fas fa-mobile"></i> Check Mobile
+                    </button>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Install Expo Go</div>
+                    <p>Download from your device's app store</p>
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <button class="btn" onclick="openPlayStore()">
+                            <i class="fab fa-google-play"></i> Play Store
+                        </button>
+                        <button class="btn" onclick="openAppStore()">
+                            <i class="fab fa-app-store"></i> App Store
+                        </button>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Connect Device</div>
+                    <p>Scan QR code or enter URL in Expo Go</p>
+                    <div style="margin-top: 15px;">
+                        <div class="progress-ring">
+                            <svg width="120" height="120">
+                                <circle class="progress-ring-circle" cx="60" cy="60" r="45"></circle>
+                            </svg>
+                        </div>
+                        <div class="progress-text" id="connectionStatus">Ready</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Checklist -->
+        <div class="section">
+            <h2><i class="fas fa-tasks"></i> Comprehensive Test Checklist</h2>
+            
+            <div class="checklist">
+                <div class="checklist-card">
+                    <div class="checklist-header">
+                        <i class="fas fa-lock"></i> Authentication Tests
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" onclick="toggleCheck(this)"></div>
+                        <span>Customer Login (showman@gmail.com / test123)</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" onclick="toggleCheck(this)"></div>
+                        <span>Customer Registration Flow</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" onclick="toggleCheck(this)"></div>
+                        <span>Admin Login (admin@travel.com / admin123)</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" onclick="toggleCheck(this)"></div>
+                        <span>Logout Functionality</span>
+                    </div>
+                </div>
+
+                <div class="checklist-card">
+                    <div class="checklist-header">
+                        <i class="fas fa-home"></i> Home Screen Tests
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" onclick="toggleCheck(this)"></div>
+                        <span>Welcome message displays correctly</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" onclick="toggleCheck(this)"></div>
+                        <span>Featured packages load</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" onclick="toggleCheck(this)"></div>
+                        <span>Featured hotels load</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" onclick="toggleCheck(this)"></div>
+                        <span>Navigation buttons work</span>
+                    </div>
+                </div>
+
+                <div class="checklist-card">
+                    <div class="checklist-header">
+                        <i class="fas fa-box"></i> Package Management
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" onclick="toggleCheck(this)"></div>
+                        <span>Package list loads without errors</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" onclick="toggleCheck(this)"></div>
+                        <span>Package details screen navigation</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" onclick="toggleCheck(this)"></div>
+                        <span>Package booking functionality</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" onclick="toggleCheck(this)"></div>
+                        <span>Price display and formatting</span>
+                    </div>
+                </div>
+
+                <div class="checklist-card">
+                    <div class="checklist-header">
+                        <i class="fas fa-hotel"></i> Hotel Management
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" onclick="toggleCheck(this)"></div>
+                        <span>Hotel list loads correctly</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" onclick="toggleCheck(this)"></div>
+                        <span>Hotel details and amenities</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" onclick="toggleCheck(this)"></div>
+                        <span>Hotel booking process</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" onclick="toggleCheck(this)"></div>
+                        <span>Rating and review display</span>
+                    </div>
+                </div>
+
+                <div class="checklist-card">
+                    <div class="checklist-header">
+                        <i class="fas fa-user-shield"></i> Admin Features
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" onclick="toggleCheck(this)"></div>
+                        <span>Admin login and authentication</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" onclick="toggleCheck(this)"></div>
+                        <span>Dashboard statistics display</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" onclick="toggleCheck(this)"></div>
+                        <span>Agent management interface</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" onclick="toggleCheck(this)"></div>
+                        <span>Revenue tracking and analytics</span>
+                    </div>
+                </div>
+
+                <div class="checklist-card">
+                    <div class="checklist-header">
+                        <i class="fas fa-mobile-alt"></i> Performance Tests
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" onclick="toggleCheck(this)"></div>
+                        <span>App loads within 3 seconds</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" onclick="toggleCheck(this)"></div>
+                        <span>Smooth navigation transitions</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" onclick="toggleCheck(this)"></div>
+                        <span>Images load properly</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" onclick="toggleCheck(this)"></div>
+                        <span>No crashes during normal use</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Credentials -->
+        <div class="section">
+            <h2><i class="fas fa-key"></i> Test Credentials</h2>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                <div class="credentials-card">
+                    <h3 style="color: #6c5ce7; margin-bottom: 15px;">
+                        <i class="fas fa-user"></i> Customer Accounts
+                    </h3>
+                    <div class="credential-item">
+                        <span class="credential-label">Email:</span>
+                        <span class="credential-value">showman@gmail.com</span>
+                    </div>
+                    <div class="credential-item">
+                        <span class="credential-label">Password:</span>
+                        <span class="credential-value">test123</span>
+                    </div>
+                    <div class="credential-item">
+                        <span class="credential-label">Alt Email:</span>
+                        <span class="credential-value">rahul.sharma@email.com</span>
+                    </div>
+                    <div class="credential-item">
+                        <span class="credential-label">Alt Password:</span>
+                        <span class="credential-value">password123</span>
+                    </div>
+                </div>
+
+                <div class="credentials-card">
+                    <h3 style="color: #6c5ce7; margin-bottom: 15px;">
+                        <i class="fas fa-user-shield"></i> Admin Account
+                    </h3>
+                    <div class="credential-item">
+                        <span class="credential-label">Email:</span>
+                        <span class="credential-value">admin@travel.com</span>
+                    </div>
+                    <div class="credential-item">
+                        <span class="credential-label">Password:</span>
+                        <span class="credential-value">admin123</span>
+                    </div>
+                    <div class="credential-item">
+                        <span class="credential-label">Role:</span>
+                        <span class="credential-value">Administrator</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Troubleshooting -->
+        <div class="section">
+            <h2><i class="fas fa-tools"></i> Troubleshooting Guide</h2>
+            
+            <div class="troubleshooting">
+                <h4><i class="fas fa-exclamation-triangle"></i> Network Error in Mobile App</h4>
+                <div class="solution">
+                    <strong>Solution:</strong> Update API URL in mobile/src/services/apiService.js
+                    <div class="command">const API_BASE_URL = 'http://YOUR_IP:5000/api';</div>
+                </div>
+            </div>
+
+            <div class="troubleshooting">
+                <h4><i class="fas fa-exclamation-triangle"></i> Expo Server Not Starting</h4>
+                <div class="solution">
+                    <strong>Solution:</strong> Clear cache and restart
+                    <div class="command">cd mobile && npx expo start --clear</div>
+                </div>
+            </div>
+
+            <div class="troubleshooting">
+                <h4><i class="fas fa-exclamation-triangle"></i> Cannot Connect to Backend</h4>
+                <div class="solution">
+                    <strong>Solution:</strong> Verify backend is running and accessible
+                    <div class="command">curl http://localhost:5000/health</div>
+                </div>
+            </div>
+
+            <div class="troubleshooting">
+                <h4><i class="fas fa-exclamation-triangle"></i> App Crashes on Startup</h4>
+                <div class="solution">
+                    <strong>Solution:</strong> Reinstall dependencies and restart
+                    <div class="command">cd mobile && npm install && npm start</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Criteria -->
+        <div class="section">
+            <h2><i class="fas fa-trophy"></i> Success Criteria</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                <div style="background: #d4edda; padding: 20px; border-radius: 10px; border-left: 4px solid #28a745;">
+                    <i class="fas fa-check-circle" style="color: #28a745; margin-right: 8px;"></i>
+                    All authentication flows work
+                </div>
+                <div style="background: #d4edda; padding: 20px; border-radius: 10px; border-left: 4px solid #28a745;">
+                    <i class="fas fa-check-circle" style="color: #28a745; margin-right: 8px;"></i>
+                    All screens load without errors
+                </div>
+                <div style="background: #d4edda; padding: 20px; border-radius: 10px; border-left: 4px solid #28a745;">
+                    <i class="fas fa-check-circle" style="color: #28a745; margin-right: 8px;"></i>
+                    API calls return data successfully
+                </div>
+                <div style="background: #d4edda; padding: 20px; border-radius: 10px; border-left: 4px solid #28a745;">
+                    <i class="fas fa-check-circle" style="color: #28a745; margin-right: 8px;"></i>
+                    Booking functionality works end-to-end
+                </div>
+                <div style="background: #d4edda; padding: 20px; border-radius: 10px; border-left: 4px solid #28a745;">
+                    <i class="fas fa-check-circle" style="color: #28a745; margin-right: 8px;"></i>
+                    Admin dashboard displays correctly
+                </div>
+                <div style="background: #d4edda; padding: 20px; border-radius: 10px; border-left: 4px solid #28a745;">
+                    <i class="fas fa-check-circle" style="color: #28a745; margin-right: 8px;"></i>
+                    App runs smoothly on both platforms
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleCheck(checkbox) {
+            checkbox.classList.toggle('checked');
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const total = document.querySelectorAll('.checkbox').length;
+            const checked = document.querySelectorAll('.checkbox.checked').length;
+            const percentage = (checked / total) * 100;
+            
+            const circle = document.querySelector('.progress-ring-circle');
+            const circumference = 2 * Math.PI * 45;
+            const offset = circumference - (percentage / 100) * circumference;
+            
+            circle.style.strokeDashoffset = offset;
+            document.getElementById('connectionStatus').textContent = Math.round(percentage) + '%';
+        }
+
+        async function checkBackend() {
+            try {
+                const response = await fetch('http://localhost:5000/health');
+                if (response.ok) {
+                    alert('✅ Backend is running successfully!');
+                } else {
+                    alert('❌ Backend responded with error');
+                }
+            } catch (error) {
+                alert('❌ Cannot connect to backend. Make sure it\'s running on port 5000');
+            }
+        }
+
+        function checkMobile() {
+            alert('📱 Check your terminal for the QR code and Expo server status');
+        }
+
+        function openPlayStore() {
+            window.open('https://play.google.com/store/apps/details?id=host.exp.exponent', '_blank');
+        }
+
+        function openAppStore() {
+            window.open('https://apps.apple.com/app/expo-go/id982107779', '_blank');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateProgress();
+        });
+    </script>
+</body>
+</html>
